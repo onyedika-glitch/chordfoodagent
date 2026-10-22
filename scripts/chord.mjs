@@ -3,6 +3,7 @@
 //
 //   node scripts/chord.mjs teammates              list teammates the key can see
 //   node scripts/chord.mjs mcp-register           register the MCP server (disabled), print its id
+//   node scripts/chord.mjs mcp-set-url          point Chord at MCP_PUBLIC_URL
 //   node scripts/chord.mjs mcp-enable             enable it, discover tools, health check
 //   node scripts/chord.mjs assign                 restrict the teammate to our MCP server
 //   node scripts/chord.mjs skill                  upload + publish skill/mama-tee-orders
@@ -71,6 +72,11 @@ const commands = {
     });
     print(s);
     console.log(`\nAdd to .env:  CHORD_MCP_SERVER_ID=${s.id}`);
+  },
+
+  async 'mcp-set-url'() {
+    need('CHORD_API_KEY', 'CHORD_WORKSPACE_ID', 'CHORD_MCP_SERVER_ID', 'MCP_PUBLIC_URL');
+    print(await api('PUT', `${ws()}/${env.CHORD_MCP_SERVER_ID}`, { url: env.MCP_PUBLIC_URL }));
   },
 
   async 'mcp-enable'() {

@@ -99,5 +99,13 @@ form like `234803•••4567`, to follow up an order.
 - Paystack rejects `wa<phone>@customers.mamatees.test` (`"email" must be a valid
   email`). WhatsApp customers have no email, so I use `@example.com`, a
   reserved domain, so receipts can't reach a stranger.
+- Paystack's dashboard refused to save the webhook URL
+  `https://mamatee.186-240-148-169.sslip.io/paystack/webhook`. The nginx and app
+  logs showed no request from Paystack, so it was rejected by form validation,
+  not by my server. Most likely cause: the IP-in-hostname wildcard DNS name. I
+  moved to a real subdomain (`foodagent.devomogo.tech`), expanded the certificate,
+  re-pointed Chord with `PUT /v1/workspaces/{ws}/mcp-servers/{id}` (health ok, 109 ms)
+  and kept the old name live during the switch. Lesson for a go-live checklist:
+  use a real domain from day one.
 - The VPS was briefly unreachable from my network (all ports filtered); it came
   back without changes on my side.

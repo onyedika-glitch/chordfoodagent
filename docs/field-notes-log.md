@@ -95,3 +95,10 @@
 
 - 6 chat requests = 0.54 credits (~0.09/turn), ~27k prompt tokens per turn
   (skill + reference files + tool schemas + history).
+
+## 9. Paystack would not save the sslip.io webhook URL (2026-10-22 ~10:05 UTC)
+
+- No Paystack request in nginx access log or app log: rejected client-side.
+- Added GET 200 on /paystack/webhook (some validators probe), then moved to
+  foodagent.devomogo.tech (A record → VPS), certbot --expand on cert "mamatee",
+  Chord MCP url updated via PUT; discovery + health ok (109 ms).

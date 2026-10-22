@@ -17,7 +17,7 @@ number; complaints, refunds, allergies and bulk orders go to a human.
 | --- | --- |
 | Live agent | Chord teammate **"Tee (Mama Tee's Kitchen)"** (`90bcdae1-8b91-413b-8c39-1be43dc77b17`), test it in the WhatsApp simulator |
 | Skill files | [`skill/mama-tee-orders/`](skill/mama-tee-orders) |
-| Custom tool (MCP server) | [`server/`](server), live at `https://mamatee.186-240-148-169.sslip.io/mcp` |
+| Custom tool (MCP server) | [`server/`](server), live at `https://foodagent.devomogo.tech/mcp` |
 | Deployment field notes | [`docs/FIELD-NOTES.md`](docs/FIELD-NOTES.md) (raw evidence log: [`docs/field-notes-log.md`](docs/field-notes-log.md)) |
 | Go-live note for the owner | [`docs/GO-LIVE.md`](docs/GO-LIVE.md) |
 | Recording script | [`docs/RECORDING.md`](docs/RECORDING.md) |
@@ -80,7 +80,7 @@ The VPS already runs nginx for other apps, so the container binds to
 ```bash
 scripts/deploy.sh                               # tar → VPS, docker compose -p mamatee up -d --build, health check
 # one-time on the VPS: deploy/nginx-mamatee.conf → sites-enabled, nginx -t, reload, then
-certbot --nginx -d mamatee.186-240-148-169.sslip.io --cert-name mamatee
+certbot --nginx -d foodagent.devomogo.tech --cert-name mamatee   # needs an A record to the VPS
 ```
 
 ### Wire it into Chord

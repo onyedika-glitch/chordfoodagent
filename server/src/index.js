@@ -137,6 +137,9 @@ app.post('/mcp', express.json({ limit: '256kb' }), async (req, res) => {
 });
 app.all('/mcp', (_req, res) => res.status(405).set('Allow', 'POST').json({ jsonrpc: '2.0', error: { code: -32000, message: 'Method not allowed' }, id: null }));
 
+// Some URL validators GET the webhook before saving it.
+app.get('/paystack/webhook', (_req, res) => res.json({ ok: true, expects: 'POST from Paystack' }));
+
 // Paystack pushes charge.success here, so an order is marked paid even if the
 // customer never comes back to the chat. Signature is HMAC-SHA512 of the raw body.
 app.post('/paystack/webhook', express.raw({ type: '*/*', limit: '1mb' }), async (req, res) => {
