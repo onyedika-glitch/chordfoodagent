@@ -153,11 +153,43 @@ app.post('/paystack/webhook', express.raw({ type: '*/*', limit: '1mb' }), async 
   let evt;
   try { evt = JSON.parse(req.body.toString('utf8')); } catch { return; }
   const ref = evt?.data?.reference;
-  log('webhook', { event: evt?.event, reference: ref });
+  log('webhook', { type: evt?.event, reference: ref });
   if (evt?.event === 'charge.success' && store.get(ref)) {
     // Re-verify rather than trusting the payload's amount.
     try { await orders.checkPayment(ref); } catch (err) { log('webhook_verify_failed', { reference: ref, message: err.message }); }
   }
+});
+
+// Where Paystack sends the customer after checkout (the dashboard's callback URL).
+// Verifies again so the page is truthful even if the webhook hasn't landed yet.
+app.get('/callback', async (req, res) => {
+  const ref = String(req.query.reference || req.query.trxref || '');
+  let title = 'Payment not found';
+  let body = 'We could not find this order. Please go back to WhatsApp and send us your reference.';
+  try {
+    const { order, outcome } = await orders.checkPayment(ref);
+    log('callback', { reference: order.reference, outcome });
+    if (outcome === 'paid') {
+      title = 'Payment received, thank you!';
+      body = `${naira(order.totalKobo)} received for order ${order.reference}. The kitchen has started your food. Go back to WhatsApp and reply "paid" to get your confirmation and delivery time.`;
+    } else if (outcome === 'failed') {
+      title = 'Payment did not go through';
+      body = 'You have not been charged. Go back to WhatsApp to get your payment link again.';
+    } else {
+      title = 'Payment still processing';
+      body = 'Paystack has not confirmed your payment yet. Bank transfers can take a few minutes. Go back to WhatsApp and reply "paid" in a moment.';
+    }
+  } catch (err) {
+    if (!(err instanceof OrderError)) {
+      log('callback_error', { reference: ref, message: err.message });
+      title = 'We could not check your payment just now';
+      body = 'If you completed payment, you are covered. Go back to WhatsApp and reply "paid" in a minute.';
+    }
+  }
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  res.send(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Tee's Kitchen</title>
+<style>body{font:17px/1.5 system-ui;margin:0;padding:32px 16px;background:#fffaf2;color:#222;text-align:center}main{max-width:420px;margin:auto}h1{font-size:22px}</style>
+<main><p>🍛 Mama Tee's Kitchen</p><h1>${esc(title)}</h1><p>${esc(body)}</p><p>You can close this page.</p></main>`);
 });
 
 // Owner's kitchen board: paid orders to cook, plus anything needing a human.

@@ -102,3 +102,13 @@
 - Added GET 200 on /paystack/webhook (some validators probe), then moved to
   foodagent.devomogo.tech (A record → VPS), certbot --expand on cert "mamatee",
   Chord MCP url updated via PUT; discovery + health ok (109 ms).
+
+## 10. Full payment loop verified (2026-10-22 10:25 UTC)
+
+- Test card payment on MTK-261022-92D96A (₦11,900). Paystack webhook POST
+  arrived from 52.31.139.75 (`Paystack/2.0`), signature valid, re-verified, order
+  marked `paid` (channel card) before the customer said anything in chat.
+- Customer was then redirected to the dashboard callback URL `/callback?trxref=…`,
+  which 404'd ("Cannot GET /callback"): I hadn't built a return page. Added one
+  that re-verifies with Paystack and tells the customer to return to WhatsApp.
+- "I've paid now" in chat → check_payment → PAID; agent confirmed with ETA.
