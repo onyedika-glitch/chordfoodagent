@@ -1,0 +1,18 @@
+# The MCP server, bound to localhost only. The host's nginx terminates TLS and
+# proxies to it (see nginx-mamatee.conf), same as the other apps on this VPS.
+services:
+  mcp:
+    build: ../server
+    container_name: mamatee_mcp
+    env_file: .env.server
+    environment:
+      DATA_FILE: /data/orders.json
+      PORT: "8787"
+    ports:
+      - "127.0.0.1:10020:8787"
+    volumes:
+      - orders:/data
+    restart: unless-stopped
+    mem_limit: 256m
+volumes:
+  orders:
