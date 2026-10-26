@@ -15,12 +15,12 @@ number; complaints, refunds, allergies and bulk orders go to a human.
 
 | Deliverable | Where |
 | --- | --- |
+| 3-minute recording | https://cap.so/s/am0dc7z5hc0a4q7 |
 | Live agent | Chord teammate **"Tee (Mama Tee's Kitchen)"** (`90bcdae1-8b91-413b-8c39-1be43dc77b17`), test it in the WhatsApp simulator |
 | Skill files | [`skill/mama-tee-orders/`](skill/mama-tee-orders) |
 | Custom tool (MCP server) | [`server/`](server), live at `https://foodagent.devomogo.tech/mcp` |
 | Deployment field notes | [`docs/FIELD-NOTES.md`](docs/FIELD-NOTES.md) (raw evidence log: [`docs/field-notes-log.md`](docs/field-notes-log.md)) |
 | Go-live note for the owner | [`docs/GO-LIVE.md`](docs/GO-LIVE.md) |
-| Recording script | [`docs/RECORDING.md`](docs/RECORDING.md) |
 
 ## How it works
 
